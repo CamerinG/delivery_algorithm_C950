@@ -1,5 +1,6 @@
 import csv
 import package
+import truck
 from hashtable import Hashtable
 
 
@@ -27,6 +28,12 @@ def load_packages(filename):
             hash_table.insert(package_instance)
             
     return hash_table
+
+def total_miles_traveled(trucks):
+    total_miles = 0
+    for truck in trucks:
+        total_miles += truck.truck_total_miles
+    return total_miles
 
 
 if __name__ == "__main__":
