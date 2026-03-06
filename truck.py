@@ -7,13 +7,14 @@ import csv
 class Truck:
     def __init__(self, id):
         self.id = id
-        self.current_location = "Hub"
+        self.current_location = "4001 South 700 East"
         self.previous_location = None
         self.packages = []
         self.capacity = 16
         self.package_count = 0
         self.speed = 18
-        self.time = 0
+        self.elapsed_time = 0
+        self.start_time = datetime.timedelta(hours=8)
         self.truck_total_miles = 0.0
 
     
@@ -30,6 +31,8 @@ class Truck:
 
     def load_truck(self, packages_on_truck):
         for package in packages_on_truck:
+            if self.package_count >= self.capacity:
+                break
             if self.is_eligible_package(package):
                 if package.truck_assigned and self.id != package.truck_assigned:
                     continue
@@ -40,10 +43,6 @@ class Truck:
                             self.add_package(p)
                 else:
                     self.add_package(package)
-
-
-
-
 
 
     """
@@ -91,7 +90,8 @@ class Truck:
         float_miles = float(miles)
         self.truck_total_miles += float_miles
         minutes = (float_miles / self.speed) * 60
-        self.time += minutes
+        self.elapsed_time += minutes
         self.remove_package(package)
         package.status = "Delivered"
-        package.deliver_time = datetime.timedelta(minutes=self.time)
+        package.deliver_time = self.start_time + datetime.timedelta(minutes=self.elapsed_time)
+        print(f"Truck {self.id} delivered package {package.id} to {package.address}. Total miles: {self.truck_total_miles:.2f}, Time: {package.deliver_time}")
