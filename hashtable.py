@@ -4,7 +4,7 @@ class Hashtable:
         self.table = [None] * self.capacity
         self.size = len(self.table)
 
-    
+# Inserts a package into the hash table based on the package's ID and handles collisions using chaining
     def insert(self, package):
         bucket = hash(package.id) % self.size
 
@@ -18,8 +18,8 @@ class Hashtable:
                     return
             self.table[bucket].append(package)
 
-        print(f"Inserting package with ID {package.id} into bucket {bucket}")
-
+        #print(f"Inserting package with ID {package.id} into bucket {bucket}")
+# To lookup package by ID
     def lookup(self, package_id):
         bucket = hash(package_id) % self.size
         if self.table[bucket] is not None:
@@ -29,7 +29,7 @@ class Hashtable:
                     return p
         print(f"Package with ID {package_id} not found in bucket {bucket}")
         return None
-
+# Removes package by ID
     def remove(self, package_id):
         bucket = hash(package_id) % self.size
         if self.table[bucket] is not None:

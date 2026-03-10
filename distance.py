@@ -1,18 +1,6 @@
 import csv
 
-
-
-"""
-with open('distancetable.csv', 'r') as file:
-    reader = csv.reader(file)
-    rows = list(reader)
-
-    for i in range(len(rows)):
-        if "1060 Dalton Ave S" in rows[i][0]:
-            print(i)
-            """
-
-
+# Retrieves the distance between two addresses from the distance table
 def get_distance(address_a, address_b):
 
     address_a = address_a.strip().lower()
