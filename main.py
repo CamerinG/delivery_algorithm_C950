@@ -113,8 +113,8 @@ def menu_loop(hash_table, trucks):
             lookup_package_status(hash_table)
         elif choice == "2":
             print(f"Total miles traveled by all trucks: {total_miles_traveled(trucks)}")
-            #print("Total miles for Truck 1:", round(truck1.truck_total_miles, 2))
-            #print("Total miles for Truck 2:", round(truck2.truck_total_miles, 2))
+            print("Total miles for Truck 1:", round(truck1.truck_total_miles, 2))
+            print("Total miles for Truck 2:", round(truck2.truck_total_miles, 2))
         elif choice == "3":
             print("Exiting program.")
             break
@@ -122,14 +122,12 @@ def menu_loop(hash_table, trucks):
             print("Invalid choice. Please try again.")
 
 # Runs the delivery simulation
-def run_delivery_simulation(hash_table):
+def run_delivery_simulation(hash_table, truck1, truck2):
     for bucket in hash_table.table:
         if bucket:
             for package in bucket:
                 package.is_delayed()
 
-    truck1 = truck.Truck(1)
-    truck2 = truck.Truck(2)
 
     truck1.load_truck(available_packages(hash_table))
     truck2.load_truck(available_packages(hash_table))
@@ -159,7 +157,11 @@ def print_all_statuses(hash_table, query_time):
 if __name__ == "__main__":
     hash_table = load_packages("packagefile.csv")
 
-    run_delivery_simulation(hash_table)
+    
+    truck1 = truck.Truck(1)
+    truck2 = truck.Truck(2)
+
+    run_delivery_simulation(hash_table, truck1, truck2)
 
     """
     print("\nStatus at 8:35 AM")
@@ -172,4 +174,4 @@ if __name__ == "__main__":
     print_all_statuses(hash_table, "12:03 PM")
     """
 
-    menu_loop(hash_table, trucks=[truck.Truck(1), truck.Truck(2)])
+    menu_loop(hash_table, trucks=[truck1, truck2])
