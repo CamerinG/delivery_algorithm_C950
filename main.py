@@ -96,12 +96,6 @@ def choose_next_package(truck):
 # for the CLI
 def menu():
     print("************************************************")
-    print("D.  Provide an intuitive interface for the user to view the DELIVERY STATUS (including the DELIVERY TIME) \n" \
-    "of any package at any time and the total mileage traveled by all trucks. \n"
-    "(The delivery status should report the package as at the hub, en route, or delivered. Delivery status must include the time.)\n" \
-    "D asks for the status and time of any package at any time, however I will add a menu option to view ALL package statuses at a specific time \n " \
-    "I will also include the address, deadline, and weight of the package in the all status look up as per request. \n")
-    print("************************************************")
     print("\nMenu:")
     print("1. Look up package status at a specific time")
     print("2. Look up all package statuses at a specific time")
@@ -166,31 +160,15 @@ def print_all_statuses(hash_table, query_time):
         if bucket:
             for package in bucket:
                 status = status_at_time(package, query_time)
-                print(f"Package {package.id} | Truck: {package.loaded_truck} | Status: {status}")
+                print(f"Package {package.id} | Truck: {package.loaded_truck} | Status: {status} | Delivery Time: {package.deliver_time} | Address: {package.address} {package.city} {package.zip} | Deadline: {package.deadline} | Weight: {package.weight}")
 
 if __name__ == "__main__":
     hash_table = load_packages("packagefile.csv")
-
-    for pid in [13, 14, 15, 16, 19, 20]:
-        p = hash_table.lookup(pid)
-        p.get_deliver_with()
-        print(pid, p.deliver_with, "|", p.notes)
 
     
     truck1 = truck.Truck(1)
     truck2 = truck.Truck(2)
 
     run_delivery_simulation(hash_table, truck1, truck2)
-
-    """
-    print("\nStatus at 8:35 AM")
-    print_all_statuses(hash_table, "8:35 AM")
-
-    print("\nStatus at 9:35 AM")
-    print_all_statuses(hash_table, "9:35 AM")
-
-    print("\nStatus at 12:03 PM")
-    print_all_statuses(hash_table, "12:03 PM")
-    """
 
     menu_loop(hash_table, trucks=[truck1, truck2])
