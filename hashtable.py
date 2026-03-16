@@ -19,6 +19,7 @@ class Hashtable:
             self.table[bucket].append(package)
 
         #print(f"Inserting package with ID {package.id} into bucket {bucket}")
+        
 # To lookup package by ID
     def lookup(self, package_id):
         bucket = hash(package_id) % self.size

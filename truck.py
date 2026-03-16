@@ -4,7 +4,6 @@ import datetime
 import csv
 
 
-
 class Truck:
     def __init__(self, id):
         self.id = id
@@ -18,8 +17,33 @@ class Truck:
         self.start_time = datetime.timedelta(hours=8)
         self.truck_total_miles = 0.0
     
+
+def get_deliver_group(self, package, packages_on_truck):
+    group_ids = {package.id}
+    changed = True
+
+    while changed:
+        changed = False
+        for p in packages_on_truck:
+            # if this package is already in the group, add its partners
+            if p.id in group_ids:
+                for partner_id in p.deliver_with:
+                    if partner_id not in group_ids:
+                        group_ids.add(partner_id)
+                        changed = True
+
+            # if this package points to anything already in the group,
+            # then this package also belongs in the group
+            elif any(partner_id in group_ids for partner_id in p.deliver_with):
+                if p.id not in group_ids:
+                    group_ids.add(p.id)
+                    changed = True
+
+    return [p for p in packages_on_truck if p.id in group_ids]
+
+
 # Loads the truck with eligible packages until the truck reaches its capacity
-    def load_truck(self, packages_on_truck):
+    """def load_truck(self, packages_on_truck):
         for package in packages_on_truck:
             if self.package_count >= self.capacity:
                 break
@@ -32,14 +56,39 @@ class Truck:
                         if p.id in package.deliver_with and p not in self.packages:
                             self.add_package(p)
                 else:
-                    self.add_package(package)
+                    self.add_package(package)"""
+    
+    def load_truck(self, packages_on_truck):
+        for package in packages_on_truck:
+            if self.package_count >= self.capacity:
+                break
+
+            if not self.is_eligible_package(package):
+                continue
+
+            if package.truck_assigned and self.id != package.truck_assigned:
+                continue
+
+            if package.deliver_with:
+                group = self.get_deliver_group(package, packages_on_truck)
+
+            # skip group if it will not fit
+                if self.package_count + len([p for p in group if p.status == "At Hub"]) > self.capacity:
+                    continue
+
+                for p in group:
+                    if self.is_eligible_package(p):
+                        self.add_package(p)
+            else:
+                self.add_package(package)
+
 
 # Checks if a package is eligible to be loaded onto the truck based on its status, assigned truck, and delay time
     def is_eligible_package(self, package):
         current_time = self.start_time + datetime.timedelta(minutes=self.elapsed_time)
         package.assign_truck()
         package.is_delayed()
-        if package.status == "Delivered":
+        if package.status != "At Hub":
             return False
         if package in self.packages:
             return False

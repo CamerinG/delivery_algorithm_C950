@@ -37,6 +37,7 @@ def available_packages(hash_table):
     for bucket in hash_table.table:
         if bucket:
             for p in bucket:
+                p.get_deliver_with() # TEST ATM
                 if p.status == "At Hub":
                     packages.append(p)
     return packages
@@ -95,10 +96,17 @@ def choose_next_package(truck):
 # for the CLI
 def menu():
     print("************************************************")
+    print("D.  Provide an intuitive interface for the user to view the DELIVERY STATUS (including the DELIVERY TIME) \n" \
+    "of any package at any time and the total mileage traveled by all trucks. \n"
+    "(The delivery status should report the package as at the hub, en route, or delivered. Delivery status must include the time.)\n" \
+    "D asks for the status and time of any package at any time, however I will add a menu option to view ALL package statuses at a specific time \n " \
+    "I will also include the address, deadline, and weight of the package in the all status look up as per request. \n")
+    print("************************************************")
     print("\nMenu:")
     print("1. Look up package status at a specific time")
-    print("2. View total miles traveled by all trucks")
-    print("3. Exit")
+    print("2. Look up all package statuses at a specific time")
+    print("3. View total miles traveled by all trucks")
+    print("4. Exit")
     print("\n")
     choice = input("Enter your choice: ")
     print("\n")
@@ -112,10 +120,13 @@ def menu_loop(hash_table, trucks):
         if choice == "1":
             lookup_package_status(hash_table)
         elif choice == "2":
+            input_query_time = input("Enter time to check all package statuses (HH:MM AM/PM): ")
+            print_all_statuses(hash_table, input_query_time)
+        elif choice == "3":
             print(f"Total miles traveled by all trucks: {total_miles_traveled(trucks)}")
             print("Total miles for Truck 1:", round(truck1.truck_total_miles, 2))
             print("Total miles for Truck 2:", round(truck2.truck_total_miles, 2))
-        elif choice == "3":
+        elif choice == "4":
             print("Exiting program.")
             break
         else:
@@ -128,9 +139,10 @@ def run_delivery_simulation(hash_table, truck1, truck2):
             for package in bucket:
                 package.is_delayed()
 
+    packages = available_packages(hash_table)
 
-    truck1.load_truck(available_packages(hash_table))
-    truck2.load_truck(available_packages(hash_table))
+    truck1.load_truck(packages)
+    truck2.load_truck(packages)
 
     route_truck(truck1)
     route_truck(truck2)
@@ -138,8 +150,10 @@ def run_delivery_simulation(hash_table, truck1, truck2):
     truck1.return_to_hub()
     truck2.return_to_hub()
 
-    truck1.load_truck(available_packages(hash_table))
-    truck2.load_truck(available_packages(hash_table))
+    packages = available_packages(hash_table)
+
+    truck1.load_truck(packages)
+    truck2.load_truck(packages)
 
     route_truck(truck1)
     route_truck(truck2)
@@ -156,6 +170,11 @@ def print_all_statuses(hash_table, query_time):
 
 if __name__ == "__main__":
     hash_table = load_packages("packagefile.csv")
+
+    for pid in [13, 14, 15, 16, 19, 20]:
+        p = hash_table.lookup(pid)
+        p.get_deliver_with()
+        print(pid, p.deliver_with, "|", p.notes)
 
     
     truck1 = truck.Truck(1)
